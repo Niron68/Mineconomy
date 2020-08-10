@@ -57,6 +57,7 @@ class Main : JavaPlugin() {
     }
 
     fun addMoney(player: Player, amount: Double){
+        player ?: println("le joueur vaut null")
         playersMoney.set(player, playersMoney[player]!! + amount)
         allPlayersMoney.set(player.name, playersMoney[player]!!)
     }
