@@ -133,7 +133,7 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
         if(plugin.playersMoney[player]!! >= price){
             if(player.inventory.firstEmpty() != -1){
                 player.inventory.addItem(ItemStack(marketItem.type, quantity))
-                plugin.removeMoney(player, price as Double)
+                plugin.removeMoney(player, price.toDouble())
                 player.sendMessage("Money: " + plugin.playersMoney[player])
             }else {
                 player.sendMessage("Votre inventaire est plein !")
@@ -160,7 +160,7 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
                 }
                 if(stackIndex.size == 1){
                     player.inventory.getItem(stackIndex.first())?.amount = player.inventory.getItem(stackIndex.first())?.amount!! - quantity;
-                    plugin.addMoney(player, price as Double)
+                    plugin.addMoney(player, price.toDouble())
                 }else{
                     var reste = quantity
                     for(index in stackIndex){
@@ -170,7 +170,7 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
                         }
                     }
                     player.inventory.getItem(stackIndex.last())?.amount = player.inventory.getItem(stackIndex.last())?.amount!! - reste;
-                    plugin.addMoney(player, price as Double)
+                    plugin.addMoney(player, price.toDouble())
                 }
                 player.sendMessage("Money: " + plugin.playersMoney[player])
             }else{
