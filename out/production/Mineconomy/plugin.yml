@@ -1,0 +1,14 @@
+name: Mineconomy
+version: 1.0
+author: niron
+main: fr.niron.mineconomy.Main
+api-version: 1.16
+commands:
+  magasin:
+    description: Ouvrir le magasin d'item
+  money:
+    description: Afficher le montant d'argent du joueur
+  pay:
+    description: Donner de l'argent à un joueur
+  balancetop:
+    description: Affiche le top 10 des joueurs les plus riche

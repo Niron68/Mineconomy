@@ -1,0 +1,118 @@
+market:
+  tools:
+    iron_axe:
+      sellingPrice: 300
+    iron_hoe:
+      sellingPrice: 200
+    iron_pickaxe:
+      sellingPrice: 300
+    iron_shovel:
+      sellingPrice: 100
+    golden_axe:
+      sellingPrice: 1200
+    golden_hoe:
+      sellingPrice: 800
+    golden_pickaxe:
+      sellingPrice: 1200
+    golden_shovel:
+      sellingPrice: 400
+    diamond_axe:
+      sellingPrice: 12000
+    diamond_hoe:
+      sellingPrice: 8000
+    diamond_pickaxe:
+      sellingPrice: 12000
+    diamond_shovel:
+      sellingPrice: 4000
+  minerals:
+    coal:
+      sellingPrice: 30
+    iron_ingot:
+      sellingPrice: 100
+    gold_ingot:
+      sellingPrice: 400
+    diamond:
+      sellingPrice: 4000
+    emerald:
+      sellingPrice: 300
+    lapis_lazuli:
+      sellingPrice: 50
+    glowstone_dust:
+      sellingPrice: 50
+  blocks:
+    cobblestone:
+      sellingPrice: 1
+    dirt:
+      sellingPrice: 1
+    coal_block:
+      sellingPrice: 270
+    iron_block:
+      sellingPrice: 900
+    gold_block:
+      sellingPrice: 3600
+    diamond_block:
+      sellingPrice: 36000
+    emerald_block:
+      sellingPrice: 2700
+    lapis_block:
+      sellingPrice: 450
+    glowstone:
+      sellingPrice: 200
+    obsidian:
+      sellingPrice: 150
+  vegetals:
+    wheat:
+      sellingPrice: 10
+    melon_slice:
+      sellingPrice: 3
+    sugar_cane:
+      sellingPrice: 5
+    pumpkin:
+      sellingPrice: 10
+    beetroot:
+      sellingPrice: 5
+    carrot:
+      sellingPrice: 5
+    potato:
+      sellingPrice: 5
+    sweet_berries:
+      sellingPrice: 3
+    cactus:
+      sellingPrice: 5
+    bamboo:
+      sellingPrice: 2
+    cocoa_beans:
+      sellingPrice: 4
+  animals:
+    beef:
+      sellingPrice: 10
+    chicken:
+      sellingPrice: 7
+    mutton:
+      sellingPrice: 10
+    porkchop:
+      sellingPrice: 10
+    cod:
+      sellingPrice: 5
+    salmon:
+      sellingPrice: 5
+    pufferfish:
+      sellingPrice: 5
+    tropical_fish:
+      sellingPrice: 5
+    leather:
+      sellingPrice: 10
+    white_wool:
+      sellingPrice: 4
+    bone:
+      sellingPrice: 5
+    string:
+      sellingPrice: 4
+    spider_eye:
+      sellingPrice: 8
+    rotten_flesh:
+      sellingPrice: 1
+    honey_bottle:
+      sellingPrice: 4
+    slime_ball:
+      sellingPrice: 5
