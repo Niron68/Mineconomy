@@ -13,6 +13,7 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
     var quantity = mutableMapOf<Player, Int>()
     var actualMenu = mutableMapOf<Player, String>()
     var mode = mutableMapOf<Player, String>()
+    var loaded = mutableMapOf<Player, Boolean>()
 
     @EventHandler
     fun onClick(event: InventoryClickEvent){
@@ -23,6 +24,7 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
         quantity.putIfAbsent(player, 1)
         actualMenu.putIfAbsent(player, "")
         mode.putIfAbsent(player, "")
+        loaded.putIfAbsent(player, true)
         if(inv.title.equals("§8Magasin", true)){
             event.isCancelled = true
             if(current.hasItemMeta() && current.itemMeta?.displayName?.equals("§5Achat", true)!!){
@@ -50,29 +52,38 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
                     changeToSpecMenu(realInv, actualMenu[player]!!, player)
                 }
             }
-        }
-    }
-
-    @EventHandler
-    fun onMarketing(event: InventoryClickEvent){
-        val current = event.currentItem ?: return
-        val inv = event.view
-        val realInv = event.inventory
-        val player = event.whoClicked as Player
-        quantity.putIfAbsent(player, 1)
-        actualMenu.putIfAbsent(player, "")
-        mode.putIfAbsent(player, "")
-
-        if(inv.title.equals("§8Magasin", true)){
             if(current.hasItemMeta() && actualMenu[player] != "" && !current.itemMeta?.displayName?.contains("§")!!){
-                if(mode[player] == "achat"){
+                if(mode[player] == "achat" && loaded[player]!!){
                     buyItem(current, player, quantity[player]!!)
-                }else if(mode[player] == "vente"){
+                }else if(mode[player] == "vente" && loaded[player]!!){
                     sellItem(current, player, quantity[player]!!)
                 }
             }
         }
     }
+
+//    @EventHandler
+//    fun onMarketing(event: InventoryClickEvent){
+//        val current = event.currentItem ?: return
+//        val inv = event.view
+//        val realInv = event.inventory
+//        val player = event.whoClicked as Player
+//        loaded.putIfAbsent(player, true)
+//        quantity.putIfAbsent(player, 1)
+//        actualMenu.putIfAbsent(player, "")
+//        mode.putIfAbsent(player, "")
+//
+//        if(inv.title.equals("§8Magasin", true)){
+//            event.isCancelled = true
+//            if(current.hasItemMeta() && actualMenu[player] != "" && !current.itemMeta?.displayName?.contains("§")!!){
+//                if(mode[player] == "achat" && loaded[player]!!){
+//                    buyItem(current, player, quantity[player]!!)
+//                }else if(mode[player] == "vente" && loaded[player]!!){
+//                    sellItem(current, player, quantity[player]!!)
+//                }
+//            }
+//        }
+//    }
 
     fun changeToMenu(inv: Inventory){
         inv.clear();
@@ -91,6 +102,7 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
     }
 
     fun changeToSpecMenu(inv: Inventory, type: String, player: Player){
+        loaded[player] = false
         inv.clear()
         inv.setItem(0, createItem("§5Menu", Material.COMPASS))
         inv.setItem(8, createItem("§5Quantity", Material.FEATHER, quantity[player]!!))
@@ -117,6 +129,9 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
             inv.setItem(i, it.getItemStack(quantity[player]!!, mode[player]!!))
             i++
         }
+        player.closeInventory()
+        player.openInventory(inv)
+        loaded[player] = true
     }
 
     fun createItem(name: String, type: Material, nb: Int = 1): ItemStack {
@@ -165,11 +180,12 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
                     var reste = quantity
                     for(index in stackIndex){
                         if(index != stackIndex.last()){
-                            total -= player.inventory.getItem(index)?.amount!!
-                            player.inventory.remove(player.inventory.getItem(index)!!)
+                            reste -= player.inventory.getItem(index)?.amount!!
+                            player.inventory.setItem(index, ItemStack(Material.AIR))
                         }
                     }
-                    player.inventory.getItem(stackIndex.last())?.amount = player.inventory.getItem(stackIndex.last())?.amount!! - reste;
+                    val amount = player.inventory.getItem(stackIndex.last())?.amount!! - reste
+                    player.inventory.getItem(stackIndex.last())?.amount = amount;
                     plugin.addMoney(player, price.toDouble())
                 }
                 player.sendMessage("Money: " + plugin.playersMoney[player])

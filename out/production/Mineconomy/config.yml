@@ -39,11 +39,6 @@ market:
       sellingPrice: 50
     glowstone_dust:
       sellingPrice: 50
-  blocks:
-    cobblestone:
-      sellingPrice: 1
-    dirt:
-      sellingPrice: 1
     coal_block:
       sellingPrice: 270
     iron_block:
@@ -58,8 +53,35 @@ market:
       sellingPrice: 450
     glowstone:
       sellingPrice: 200
+  blocks:
+    cobblestone:
+      sellingPrice: 1
+    dirt:
+      sellingPrice: 1
+    sand:
+      sellingPrice: 1
+    gravel:
+      sellingPrice: 1
     obsidian:
       sellingPrice: 150
+    granite:
+      sellingPrice: 1
+    diorite:
+      sellingPrice: 1
+    andesite:
+      sellingPrice: 1
+    acacia_log:
+      sellingPrice: 10
+    birch_log:
+      sellingPrice: 10
+    dark_oak_log:
+      sellingPrice: 10
+    jungle_log:
+      sellingPrice: 10
+    oak_log:
+      sellingPrice: 10
+    spruce_log:
+      sellingPrice: 10
   vegetals:
     wheat:
       sellingPrice: 10
@@ -104,8 +126,6 @@ market:
       sellingPrice: 10
     white_wool:
       sellingPrice: 4
-    bone:
-      sellingPrice: 5
     string:
       sellingPrice: 4
     spider_eye:
@@ -116,3 +136,5 @@ market:
       sellingPrice: 4
     slime_ball:
       sellingPrice: 5
+    phantom_membrane:
+      sellingPrice: 500

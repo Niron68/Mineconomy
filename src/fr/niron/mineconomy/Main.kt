@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
+import java.lang.Exception
 
 class Main : JavaPlugin() {
 
@@ -45,14 +46,19 @@ class Main : JavaPlugin() {
 
     override fun onDisable() {
         for(el in playersData){
-            val player = el.key
-            if(playersMoney[player] != null){
-                playersData[player]?.set("money", playersMoney[player])
-                playersData[player]?.save(playersFile[player]!!)
+            try{
+                val player = el.key
+                if(playersMoney[player] != null){
+                    playersData[player]?.set("money", playersMoney[player])
+                    playersData[player]?.save(playersFile[player]!!)
+                }
+                playersData.remove(player)
+                playersFile.remove(player)
+                playersMoney.remove(player)
+            }catch (e: Exception){
+
             }
-            playersData.remove(player)
-            playersFile.remove(player)
-            playersMoney.remove(player)
+
         }
     }
 
