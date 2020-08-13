@@ -1,10 +1,14 @@
 package fr.niron.mineconomy
 
+import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.block.Chest
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryDragEvent
+import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
@@ -58,6 +62,20 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
                 }else if(mode[player] == "vente" && loaded[player]!!){
                     sellItem(current, player, quantity[player]!!)
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    fun onDrag(e: InventoryMoveItemEvent){
+        val inv = e.destination
+        val item = e.item
+        if(inv.holder is Chest){
+            val chest = inv.holder as Chest
+            if(chest.hasMetadata("player")){
+                val player = Bukkit.getPlayer(chest.getMetadata("player").first().asString())
+                player ?: return
+                sellItem(item, player, item.amount, inv)
             }
         }
     }
@@ -158,14 +176,15 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
         }
     }
 
-    fun sellItem(item: ItemStack, player: Player, quantity: Int){
-        val marketItem = list.find { it.type == item.type }!!
+    fun sellItem(item: ItemStack, player: Player, quantity: Int, inv: Inventory = player.inventory){
+        val marketItem = list.find { it.type == item.type }
+        marketItem ?: return
         val price = marketItem.sellingPrice * quantity
-        if(player.inventory.first(marketItem.type) != -1){
-            if((player.inventory.all(marketItem.type).values.fold(0) { acc, itemStack -> acc+itemStack.amount }) >= quantity){
+        if(inv.first(marketItem.type) != -1){
+            if((inv.all(marketItem.type).values.fold(0) { acc, itemStack -> acc+itemStack.amount }) >= quantity){
                 val stackIndex = mutableListOf<Int>()
                 var total = 0
-                val stackMap = player.inventory.all(marketItem.type)
+                val stackMap = inv.all(marketItem.type)
                 for(el in stackMap){
                     stackIndex.add(el.key)
                     total += el.value.amount
@@ -174,26 +193,29 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
                     }
                 }
                 if(stackIndex.size == 1){
-                    player.inventory.getItem(stackIndex.first())?.amount = player.inventory.getItem(stackIndex.first())?.amount!! - quantity;
+                    inv.getItem(stackIndex.first())?.amount = inv.getItem(stackIndex.first())?.amount!! - quantity;
                     plugin.addMoney(player, price.toDouble())
                 }else{
                     var reste = quantity
                     for(index in stackIndex){
                         if(index != stackIndex.last()){
-                            reste -= player.inventory.getItem(index)?.amount!!
-                            player.inventory.setItem(index, ItemStack(Material.AIR))
+                            reste -= inv.getItem(index)?.amount!!
+                            inv.setItem(index, ItemStack(Material.AIR))
                         }
                     }
                     val amount = player.inventory.getItem(stackIndex.last())?.amount!! - reste
-                    player.inventory.getItem(stackIndex.last())?.amount = amount;
+                    inv.getItem(stackIndex.last())?.amount = amount;
                     plugin.addMoney(player, price.toDouble())
                 }
-                player.sendMessage("Money: " + plugin.playersMoney[player])
+                if(inv == player.inventory )
+                    player.sendMessage("Money: " + plugin.playersMoney[player])
             }else{
-                player.sendMessage("Vous n'avez pas assez d'exemplaire de cet item")
+                if(inv == player.inventory )
+                    player.sendMessage("Vous n'avez pas assez d'exemplaire de cet item")
             }
         }else{
-            player.sendMessage("Vous ne posseder pas cet item")
+            if(inv == player.inventory )
+                player.sendMessage("Vous ne posseder pas cet item")
         }
     }
 }

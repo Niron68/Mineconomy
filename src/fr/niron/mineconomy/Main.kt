@@ -1,9 +1,6 @@
 package fr.niron.mineconomy
 
-import fr.niron.mineconomy.commands.CommandBalanceTop
-import fr.niron.mineconomy.commands.CommandMagasin
-import fr.niron.mineconomy.commands.CommandMoney
-import fr.niron.mineconomy.commands.CommandPay
+import fr.niron.mineconomy.commands.*
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.configuration.file.YamlConfiguration
@@ -40,6 +37,7 @@ class Main : JavaPlugin() {
         getCommand("money")?.setExecutor(CommandMoney(this))
         getCommand("pay")?.setExecutor(CommandPay(this))
         getCommand("balancetop")?.setExecutor(CommandBalanceTop(this))
+        getCommand("selling")?.setExecutor(CommandSelling(this))
         server.pluginManager.registerEvents(MagasinListener(itemList, this), this)
         server.pluginManager.registerEvents(MoneyListener(this), this)
     }
