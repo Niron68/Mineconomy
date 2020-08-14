@@ -19,6 +19,13 @@ class CommandPay(val plugin: Main) : CommandExecutor {
                     var amount: Double
                     try{
                         amount = args[1].toDouble()
+                        if(amount < 0){
+                            player.sendMessage("Bien tenté :)")
+                            return false
+                        }else if(amount > plugin.allPlayersMoney[player.name]!!){
+                            player.sendMessage("Tu n'as pas assez d'argent pour effectuer cette action")
+                            return false
+                        }
                         plugin.removeMoney(player, amount)
                         plugin.addMoney(dest, amount)
                         player.sendMessage("Vous avez payer " + amount + " a " + dest.displayName)

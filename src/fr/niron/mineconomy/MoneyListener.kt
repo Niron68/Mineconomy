@@ -18,7 +18,12 @@ class MoneyListener(val plugin: Main) : Listener {
         if(f.exists()){
             config = YamlConfiguration.loadConfiguration(f)
             plugin.playersData.put(player, config)
-            plugin.playersMoney.put(player, config.getDouble("money"))
+            if(plugin.allPlayersMoney[player.name] != null){
+                println("chargement de la money de " + player.name + " avec allMoney")
+                plugin.playersMoney[player] = plugin.allPlayersMoney[player.name]!!
+            }else{
+                plugin.playersMoney.put(player, config.getDouble("money"))
+            }
             plugin.playersFile.put(player, f)
             println(player.displayName + " data loaded")
         }else try{
@@ -40,7 +45,6 @@ class MoneyListener(val plugin: Main) : Listener {
         val player = event.player
         if(plugin.playersMoney[player] != null){
             plugin.playersData[player]?.set("money", plugin.playersMoney[player])
-            plugin.allPlayersMoney.set(player.name, plugin.playersMoney[player]!!)
             plugin.playersData[player]?.save(plugin.playersFile[player]!!)
         }
         plugin.playersData.remove(player)

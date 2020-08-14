@@ -3,14 +3,17 @@ package fr.niron.mineconomy
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Chest
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+import java.io.File
 
 class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Listener {
 
@@ -73,9 +76,31 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
         if(inv.holder is Chest){
             val chest = inv.holder as Chest
             if(chest.hasMetadata("player")){
-                val player = Bukkit.getPlayer(chest.getMetadata("player").first().asString())
-                player ?: return
-                sellItem(item, player, item.amount, inv)
+                if(!plugin.allPlayersMoney.containsKey(chest.getMetadata("player").first().asString()))
+                    return
+                sellItem(item, name = chest.getMetadata("player").first().asString(), quantity = item.amount, inv = inv)
+            }
+        }
+    }
+
+    @EventHandler
+    fun onBreak(e: BlockBreakEvent){
+        val block = e.block
+        val player = e.player
+        if(block.hasMetadata("player")){
+            val f = File(plugin.dataFolder, "sellingChest.yml")
+            if(!f.exists())
+                return
+            val config = YamlConfiguration.loadConfiguration(f)
+            config.getConfigurationSection(player.name) ?: return
+            config.getConfigurationSection(player.name)!!.getKeys(false).forEach{
+                val id = it
+                if(config.getInt(player.name + ".$id.x") == block.x && config.getInt(player.name + ".$id.y") == block.y && config.getInt(player.name + ".$id.z") == block.z){
+                    config.set(player.name + ".$id", null)
+                    config.save(f)
+                    block.removeMetadata("player", plugin)
+                    player.sendMessage("§bCoffre de vente detruis")
+                }
             }
         }
     }
@@ -176,7 +201,9 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
         }
     }
 
-    fun sellItem(item: ItemStack, player: Player, quantity: Int, inv: Inventory = player.inventory){
+    fun sellItem(item: ItemStack, player: Player? = null, quantity: Int, inv: Inventory? = player?.inventory, name: String? = player?.name){
+        name ?: return
+        inv ?: return
         val marketItem = list.find { it.type == item.type }
         marketItem ?: return
         val price = marketItem.sellingPrice * quantity
@@ -194,7 +221,10 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
                 }
                 if(stackIndex.size == 1){
                     inv.getItem(stackIndex.first())?.amount = inv.getItem(stackIndex.first())?.amount!! - quantity;
-                    plugin.addMoney(player, price.toDouble())
+                    if(player != null)
+                        plugin.addMoney(player, price.toDouble())
+                    else
+                        plugin.addMoney(name = name, amount = price.toDouble())
                 }else{
                     var reste = quantity
                     for(index in stackIndex){
@@ -203,18 +233,21 @@ class MagasinListener(val list: MutableList<MarketItem>, val plugin: Main) : Lis
                             inv.setItem(index, ItemStack(Material.AIR))
                         }
                     }
-                    val amount = player.inventory.getItem(stackIndex.last())?.amount!! - reste
+                    val amount = inv.getItem(stackIndex.last())?.amount!! - reste
                     inv.getItem(stackIndex.last())?.amount = amount;
-                    plugin.addMoney(player, price.toDouble())
+                    if(player != null)
+                        plugin.addMoney(player, price.toDouble())
+                    else
+                        plugin.addMoney(name = name, amount = price.toDouble())
                 }
-                if(inv == player.inventory )
+                if(player != null && inv == player.inventory )
                     player.sendMessage("Money: " + plugin.playersMoney[player])
             }else{
-                if(inv == player.inventory )
+                if(player != null && inv == player.inventory )
                     player.sendMessage("Vous n'avez pas assez d'exemplaire de cet item")
             }
         }else{
-            if(inv == player.inventory )
+            if(player != null && inv == player.inventory )
                 player.sendMessage("Vous ne posseder pas cet item")
         }
     }
