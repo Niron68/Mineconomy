@@ -6,11 +6,11 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class CommandBalanceTop(val plugin: Main) : CommandExecutor {
+class CommandBalanceTop(private val plugin: Main) : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, p1: Command, p2: String, p3: Array<out String>): Boolean {
-        var count: Int = 1
-        var message: String = ""
+        var count = 1
+        var message = ""
         val sortedMap = plugin.allPlayersMoney.toList().sortedBy { (_, value) -> -value }.toMap()
         sortedMap.forEach{
             if(count <= 10){
@@ -19,8 +19,7 @@ class CommandBalanceTop(val plugin: Main) : CommandExecutor {
             }
         }
         if(sender is Player){
-            val player = sender as Player
-            player.sendMessage(message)
+            sender.sendMessage(message)
         }else{
             println(message)
         }

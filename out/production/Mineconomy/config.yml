@@ -62,8 +62,10 @@ market:
       sellingPrice: 1
     gravel:
       sellingPrice: 1
+    netherrack:
+      sellingPrice: 1
     obsidian:
-      sellingPrice: 150
+      sellingPrice: 50
     granite:
       sellingPrice: 1
     diorite:

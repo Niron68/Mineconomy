@@ -10,8 +10,8 @@ class MarketItem(val type: Material, val sellingPrice: Int, val cat: String) {
 
 
     fun getItemStack(quantity: Int, mode: String): ItemStack{
-        var it = ItemStack(type, quantity)
-        var itM = it.itemMeta!!
+        val it = ItemStack(type, quantity)
+        val itM = it.itemMeta!!
         val lore = mutableListOf<String>()
         if(mode == "achat"){
             lore.add("§5Acheter")

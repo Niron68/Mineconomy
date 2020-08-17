@@ -8,32 +8,32 @@ import org.bukkit.event.player.PlayerQuitEvent
 import java.io.File
 import java.io.IOException
 
-class MoneyListener(val plugin: Main) : Listener {
+class MoneyListener(private val plugin: Main) : Listener {
 
     @EventHandler
     fun onLogin(event: PlayerLoginEvent){
         val player = event.player
-        var config: YamlConfiguration
-        val f: File = File(plugin.dataFolder, player.uniqueId.toString()+".yml")
+        val config: YamlConfiguration
+        val f = File(plugin.dataFolder, player.uniqueId.toString()+".yml")
         if(f.exists()){
             config = YamlConfiguration.loadConfiguration(f)
-            plugin.playersData.put(player, config)
+            plugin.playersData[player] = config
             if(plugin.allPlayersMoney[player.name] != null){
                 println("chargement de la money de " + player.name + " avec allMoney")
                 plugin.playersMoney[player] = plugin.allPlayersMoney[player.name]!!
             }else{
-                plugin.playersMoney.put(player, config.getDouble("money"))
+                plugin.playersMoney[player] = config.getDouble("money")
             }
-            plugin.playersFile.put(player, f)
+            plugin.playersFile[player] = f
             println(player.displayName + " data loaded")
         }else try{
             f.createNewFile()
             config = YamlConfiguration.loadConfiguration(f)
             config.createSection("money")
             config.set("money", 0)
-            plugin.playersData.put(player, config)
-            plugin.playersMoney.put(player, config.getDouble("money"))
-            plugin.playersFile.put(player, f)
+            plugin.playersData[player] = config
+            plugin.playersMoney[player] = config.getDouble("money")
+            plugin.playersFile[player] = f
             println(player.displayName + " data created")
         } catch (e: IOException){
             e.printStackTrace()
